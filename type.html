@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signature Maker</title>
+    <style>
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+}
+
+.signature-container {
+  background-color: transparent;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 90vw;
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.signature-container h1 {
+  color: beige;
+}
+
+button {
+  display: inline-block;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: #fff;
+  font-size: 14px;
+  height: 38px;
+  padding: 8px 24px;
+  border-radius: 50px;
+  background-image: linear-gradient(180deg, #7c8aff, #3c4fe0);
+  box-shadow: 0 4px 11px 0 rgb(37 44 97 / 15%), 0 1px 3px 0 rgb(93 100 148 / 20%);
+  transition: all .2s ease-out;
+  margin-top: 10px;
+}
+
+input[type="color"] {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-image: linear-gradient(180deg, #7c8aff, #3c4fe0);
+  border: none;
+  color: white;
+  cursor: pointer;
+  height: 2.5em;
+  padding: 0.5em 1.5em;
+  width: 6em;
+  border-radius: 15px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
+}
+
+input[type="color"]::after {
+  content: "Color";
+}
+
+input[type="text"] {
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  background-color: transparent;
+  color: white;
+  padding-left: 10px;
+}
+
+#signature-text {
+  background-color: #fff;
+  padding: 20px;
+  font-size: larger;
+  font-weight: bold;
+}
+
+#font-select {
+  width: 50%;
+  height: 40px;
+  border-radius: 15px;
+  background-color: transparent;
+  padding-left: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+  .signature-container {
+    width: 90%;
+    padding: 10px;
+  }
+}
+
+    </style>
+</head>
+<body>
+    <div class="signature-container" id="signature-container">
+        <h1>Type Your Name Here</h1>
+        <input type="text" id="name-input">
+        <br>
+       
+        <select id="font-select">
+            <optgroup label="Simple Fonts">
+                <option value="Arial">Arial</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Trebuchet MS">Trebuchet MS</option>
+            </optgroup>
+            <optgroup label="Cursive Fonts">
+                <option value="Comic Sans MS">Comic Sans MS</option>
+                <option value="Lucida Handwriting">Lucida Handwriting</option>
+                <option value="Brush Script MT">Brush Script MT</option>
+                <option value="Bradley Hand">Bradley Hand</option>
+            </optgroup>
+            <input type="color" id="color-picker">
+        </select>
+        <br>
+     
+       
+    
+        <br>
+        <div id="signature-text"></div>
+        <br>
+        <button id="download-btn">Download Signature</button>
+    </div>
+
+    <script>
+        function updateSignature() {
+            var name = document.getElementById('name-input').value;
+            var font = document.getElementById('font-select').value;
+            var color = document.getElementById('color-picker').value;
+            var signatureText = document.getElementById('signature-text');
+            signatureText.style.fontFamily = font;
+            signatureText.style.color = color;
+            signatureText.innerText = name;
+
+            // Update color code display
+            document.getElementById('color-code').innerText = color.toUpperCase();
+        }
+
+        document.getElementById('name-input').addEventListener('input', updateSignature);
+        document.getElementById('font-select').addEventListener('change', updateSignature);
+        document.getElementById('color-picker').addEventListener('change', updateSignature);
+
+        document.getElementById('download-btn').addEventListener('click', function() {
+            var canvas = document.createElement('canvas');
+            var context = canvas.getContext('2d');
+            var signatureText = document.getElementById('signature-text');
+            canvas.width = signatureText.clientWidth;
+            canvas.height = signatureText.clientHeight;
+            context.font = window.getComputedStyle(signatureText).getPropertyValue('font');
+            context.fillStyle = window.getComputedStyle(signatureText).getPropertyValue('color');
+            context.fillText(signatureText.innerText, 0, parseInt(window.getComputedStyle(signatureText).getPropertyValue('font-size'), 10));
+            var link = document.createElement('a');
+            link.href = canvas.toDataURL();
+            link.download = 'signature.png';
+            link.click();
+        });
+    </script>
+</body>
+</html>
